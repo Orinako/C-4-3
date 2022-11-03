@@ -43,9 +43,11 @@ namespace Задание_4_3
             #endregion
 
             #region (Основной цикл перебора поколений)
-            int generation = 1000;
+            int generation = 100;
             int g = 0;
-            while (g <= generation)
+            int totalDeaths = 0;
+            int totalBirths = 0;
+            while (g++ < generation)
             {
                 Console.Clear();
                 Console.WriteLine("<<<Игра в жизнь!>>>");
@@ -66,41 +68,88 @@ namespace Задание_4_3
                         }
                     }
                     //Клетки умирают
-                    if (cells[i, j] == true)
+                    if (cells[i, j])
                     {
-                        if (alive < 2) cells[i, j] = false;
-                        if (alive > 3) cells[i, j] = false;
+                            if (alive < 2)
+                            {
+                                cells[i, j] = false;
+                                totalDeaths++;
+                            }
+                            if (alive > 3)
+                            {
+                                cells[i, j] = false;
+                                totalDeaths++;
+                            }
                     }
                     //Клетки рождаются
                     else
                     {
-                        if (alive == 3) cells[i, j] = true;
+                            if (alive == 3)
+                            {
+                                cells[i, j] = true;
+                                totalBirths++;
+                            }
                     }
                 }
             }
-            
-            for (int i = 0; i < heigth; i++)
+
+                if (g % 5 == 0)
+                {
+                    Random deathAmount = new Random();
+                    int death = deathAmount.Next(4);
+                    int d=0;
+                    while (d++ < death)
+                    {
+                        Random killK = new Random();
+                        Random killL = new Random();
+                        int k = killK.Next(heigth);
+                        int l = killL.Next(width);
+                        cells[k, l] = false;
+                        totalDeaths++;
+                    }
+                }
+
+                if (g % 8 == 0)
+                {
+                    Random birthAmount = new Random();
+                    int birth = birthAmount.Next(10);
+                    int b = 0;
+                    while (b++ < birth)
+                    {    
+                        Random birthH = new Random();
+                        Random birthW = new Random();
+                        int h = birthH.Next(heigth);
+                        int w = birthW.Next(width);
+                        cells[h, w] = true;
+                        totalBirths++;
+                    }
+                }
+
+                for (int i = 0; i < heigth; i++)
             {
                 for (int j = 0; j < width; j++)
                 {
                     if (cells[i, j] == false) Console.Write(' ');
                     if (cells[i, j] == true) Console.Write('+');
                 }
-
-                g++;
+                
                 Console.WriteLine("\r");
                 
             }
-                System.Threading.Thread.Sleep(200);
+                
+                if (g == generation)
+                {
+                    Console.WriteLine($"Этим клеткам удалось дожить до {g}-ого поколения!");
+                    Console.WriteLine("За это время:");
+                    Console.WriteLine($" погибло клеток - {totalDeaths, 8}");
+                    Console.WriteLine($" родилось клеток - {totalBirths, 7}");
+                }
+                System.Threading.Thread.Sleep(100);
+                Console.CursorVisible = false;
             }
 
             #endregion
 
-
-
-
-
-            Console.CursorVisible = false;
             Console.ReadKey();
         }
     }
